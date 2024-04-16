@@ -13,7 +13,7 @@ classdef ProximalOperators
         function result = proxNuclearNorm(self, signal, gamma)
             [u, s, vt] = svd(signal);
             soft_s = zeros(size(signal));
-            soft_s(1:min(size(signal)), 1:min(size(signal))) = diag(max(diag(s) - gamma, 0) + min(diag(s) + gamma, 0));
+            soft_s(1:min(size(signal)), 1:min(size(signal))) = diag(self.proxL1Norm(diag(s), gamma));
 
             result = u * soft_s * vt';
         end

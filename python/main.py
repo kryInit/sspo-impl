@@ -15,7 +15,7 @@ def prox_L1_norm(signal: Union[NDArray[float], NDArray[NDArray[float]]], gamma: 
 def prox_nuclear_norm(signal: NDArray[NDArray[float]], gamma: float) -> NDArray[NDArray]:
     u, s, vt = np.linalg.svd(signal)
     soft_s = np.zeros((u.shape[1], vt.shape[0]))
-    np.fill_diagonal(soft_s, np.maximum(s - gamma, 0) + np.minimum(s + gamma, 0))
+    np.fill_diagonal(soft_s, prox_L1_norm(s, gamma))
     return u @ soft_s @ vt
 
 
@@ -219,8 +219,8 @@ def main():
     np.random.seed(42)
     # exercise2()
     # exercise3()
-    # exercise4()
-    exercise5()
+    exercise4()
+    # exercise5()
 
 
 if __name__ == '__main__':
