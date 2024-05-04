@@ -46,10 +46,10 @@ def exercise3(params: Params) -> Result:
 
     # 初期推定値の計算
     initial_guess, _, _, _ = np.linalg.lstsq(observation_matrix, observed_signal)  # 初期解 = 最小二乗解 (initial solution)
-    current_guess = initial_guess
+    current_guess = np.random.randn(n)
 
-    initial_loss = np.linalg.norm(observation_matrix.dot(current_guess) - observed_signal)
-    initial_true_loss = np.linalg.norm(original_signal - current_guess)
+    initial_loss = np.linalg.norm(observation_matrix.dot(initial_guess) - observed_signal)
+    initial_true_loss = np.linalg.norm(original_signal - initial_guess)
 
     for _ in range(n_iter):
         optimized_guess_with_grad = current_guess - step_size * observation_matrix.T @ (observation_matrix.dot(current_guess) - observed_signal)
@@ -57,6 +57,7 @@ def exercise3(params: Params) -> Result:
 
     loss = np.linalg.norm(observation_matrix.dot(current_guess) - observed_signal)
     true_loss = np.linalg.norm(original_signal - current_guess)
+
     return Result(initial_loss, initial_true_loss, loss, true_loss)
 
 
@@ -72,18 +73,13 @@ def grid_search(params_arr: List[Params], xs: NDArray[float], param_name: str):
         losses.append(result.loss)
         true_losses.append(result.true_loss)
 
-    fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+    fig, axes = plt.subplots(1, 1, figsize=(5, 5))
 
-    axes[0].plot(xs, initial_losses, label="initial loss")
-    axes[0].plot(xs, losses, label="loss")
-    axes[0].set_title("loss")
-    axes[0].legend()
+    axes.plot(xs, np.array(losses)*8, label="loss")
+    axes.plot(xs, true_losses, label="true loss")
+    axes.set_title("loss")
+    axes.legend()
 
-
-    axes[1].plot(xs, initial_true_losses, label="initial true loss")
-    axes[1].plot(xs, true_losses, label="true loss")
-    axes[1].set_title("true loss")
-    axes[1].legend()
 
     fig.suptitle(f"grid search: {param_name}")
     plt.tight_layout()
@@ -122,8 +118,8 @@ def grid_search_random_seed():
 
 if __name__ == '__main__':
     np.random.seed(42)
-    grid_search_sparse_rate()
+    # grid_search_sparse_rate()
     grid_search_k()
-    grid_search_error_std()
-    grid_search_l1_weight()
-    grid_search_random_seed()
+    # grid_search_error_std()
+    # grid_search_l1_weight()
+    # grid_search_random_seed()

@@ -243,9 +243,9 @@ def exercise5():
 def main():
     np.random.seed(42)
     # exercise2()
-    exercise3()
-    # exercise4()
-    # exercise5()
+    # exercise3()
+    exercise4()
+    exercise5()
 
 
 if __name__ == '__main__':
