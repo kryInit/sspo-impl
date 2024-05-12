@@ -5,6 +5,7 @@ from scipy.io import loadmat
 from pathlib import Path
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+import imageio
 
 
 def calc_mean_psnr(original, signal) -> float:
@@ -78,7 +79,7 @@ def main():
     l1_norm_weight = given_variables['lambda'][0, 0]
     n_iter = 20000
 
-    u = v
+    u = v.copy()
     l = np.zeros(u.shape)
     z1 = Dvh(u)
     z2 = Dv(l)
@@ -147,6 +148,17 @@ def main():
 
     plt.tight_layout()
     plt.show()
+
+    print(np.min(v), np.max(v), np.min(true_u), np.max(true_u), np.min(u), np.max(u))
+
+    scaled_v = (255 * np.transpose(v, (2, 0, 1))).astype(np.uint8)
+    scaled_true_u = (255 * np.transpose(true_u, (2, 0, 1))).astype(np.uint8)
+    scaled_restored_u = (255 * np.transpose(u, (2, 0, 1))).astype(np.uint8)
+
+    output_path = Path(__file__).absolute().parent.parent.joinpath('output')
+    imageio.mimsave(output_path.joinpath('v.gif'), scaled_v, duration=0.1)
+    imageio.mimsave(output_path.joinpath('true_u.gif'), scaled_true_u, duration=0.1)
+    imageio.mimsave(output_path.joinpath('restored_u.gif'), scaled_restored_u, duration=0.1)
 
 
 if __name__ == '__main__':
